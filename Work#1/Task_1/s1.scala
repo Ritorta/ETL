@@ -24,7 +24,7 @@ if(1==1){
             .load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#1/Task_1/Сем1.xlsx")
             df1.show()
             df1.filter(col("Код предмета").isNotNull).select("Код предмета","Предмет","Учитель")
-            .write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=alex&password=1")
+            .write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=root&password=")
             .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "tasketl1a")
             .mode("overwrite").save()
 
@@ -32,7 +32,7 @@ if(1==1){
             df1.withColumn("id", monotonicallyIncreasingId())
             .withColumn("Код предмета", when(col("Код предмета").isNull, last("Код предмета", ignoreNulls = true).over(window1)).otherwise(col("Код предмета")))
             .orderBy("id").drop("id","Предмет","Учитель")
-            .write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=alex&password=1")
+            .write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=root&password=")
             .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "tasketl1b")
             .mode("overwrite").save()
             println("task 1")
