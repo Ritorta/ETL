@@ -13,9 +13,10 @@
 ). 
 Сохранить полученный результат в БД. На проверку соберите код, скриншоты отработки консоли спарка и полученный результат в БД в один pdf файл.
 
-Employee_ID    Name         Job_Code    Job         City_code   Home_city
-E001           Alice        J01         Chef        26          Moscow
-E001           Alice        J02         Waiter      26          Moscow
-E002           Bob          J02         Waiter      56          Perm
-E002           Bob          J03         Bartender   56          Perm
-E003           Alice        J01         Chef        56          Perm
+Employee_ID    Name       Job_Code    Job         City_code   Home_city
+E001           Alice      J01         Chef        26          Moscow
+E001           Alice      J02         Waiter      26          Moscow
+E002           Bob        J02         Waiter      56          Perm
+E002           Bob        J03         Bartender   56          Perm
+E003           Alice      J01         Chef        56          Perm
+
