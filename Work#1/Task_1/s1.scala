@@ -7,6 +7,9 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.expressions.Window
 
 val t1 = System.currentTimeMillis()
+val sqlCoun = "jdbc:mysql://localhost:3306/spark?user=root&password="
+val driver = "com.mysql.cj.jdbc.Driver"
+
 if(1==1){
     var df1 = spark.read.format("com.crealytics.spark.excel")
             .option("sheetName", "Sheet1")
@@ -21,19 +24,19 @@ if(1==1){
             .option("excerptSize", 10)
             .option("header", "true")
             .format("excel")
-            .load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#1/Task_1/Сем1.xlsx")
+            .load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#1/Task_1/Sem1.xlsx")
             df1.show()
             df1.filter(col("Код предмета").isNotNull).select("Код предмета","Предмет","Учитель")
-            .write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=root&password=")
-            .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "tasketl1a")
+            .write.format("jdbc").option("url", sqlCoun)
+            .option("driver", driver).option("dbtable", "taskl1a")
             .mode("overwrite").save()
 
             val window1 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
             df1.withColumn("id", monotonicallyIncreasingId())
             .withColumn("Код предмета", when(col("Код предмета").isNull, last("Код предмета", ignoreNulls = true).over(window1)).otherwise(col("Код предмета")))
             .orderBy("id").drop("id","Предмет","Учитель")
-            .write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=root&password=")
-            .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "tasketl1b")
+            .write.format("jdbc").option("url", sqlCoun)
+            .option("driver", driver).option("dbtable", "task1b")
             .mode("overwrite").save()
             println("task 1")
 }
