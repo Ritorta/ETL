@@ -1,6 +1,7 @@
 /*
 chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#1\Task_1\s1.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 */
+
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.functions.{col, collect_list, concat_ws}
 import org.apache.spark.sql.{DataFrame, SparkSession}
@@ -26,9 +27,10 @@ if(1==1){
             .format("excel")
             .load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#1/Task_1/Sem1.xlsx")
             df1.show()
+
             df1.filter(col("Код предмета").isNotNull).select("Код предмета","Предмет","Учитель")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "taskl1a")
+            .option("driver", driver).option("dbtable", "w1task1a")
             .mode("overwrite").save()
 
             val window1 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
@@ -36,9 +38,10 @@ if(1==1){
             .withColumn("Код предмета", when(col("Код предмета").isNull, last("Код предмета", ignoreNulls = true).over(window1)).otherwise(col("Код предмета")))
             .orderBy("id").drop("id","Предмет","Учитель")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "task1b")
+            .option("driver", driver).option("dbtable", "w1task1b")
             .mode("overwrite").save()
-            println("task 1")
+
+            println("Work 1, Task 1, Done")
 }
 
 val s0 = (System.currentTimeMillis() - t1)/1000

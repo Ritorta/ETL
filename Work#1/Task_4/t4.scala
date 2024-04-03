@@ -1,16 +1,16 @@
 /*
 chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#1\Task_4\t4.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 */
+
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.functions.{col, collect_list, concat_ws}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.expressions.Window
-import com.typesafe.config.{Config, ConfigFactory}
-
-val config = ConfigFactory.load("C:/Users/Esdesu/Desktop/JreJre/ETL/config.conf")
-val password = config.getString("MYSQL_PASSWORD")
 
 val t1 = System.currentTimeMillis()
+val sqlCoun = "jdbc:mysql://localhost:3306/spark?user=root&password="
+val driver = "com.mysql.cj.jdbc.Driver"
+
 if(1==1){
     var df1 = spark.read.format("com.crealytics.spark.excel")
             .option("sheetName", "Sheet1")
@@ -25,30 +25,72 @@ if(1==1){
             .option("excerptSize", 10)
             .option("header", "true")
             .format("excel")
-            .load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#1/Task_4/t4.xlsx")
+            .load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#1/Task_4/w1t4.xlsx")
             df1.show()
-            df1.filter(col("Employee_ID").isNotNull).select("Employee_ID", "Job", "Home_city")
-            .write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=root&password=" +password)
-            .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "testtabl1")
+
+            df1.filter(col("Employee_ID").isNotNull).select("Employee_ID", "Job_code")
+            .write.format("jdbc").option("url", sqlCoun)
+            .option("driver", driver).option("dbtable", "w1task4a")
             .mode("overwrite").save()
 
-            val window1 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
-            df1.withColumn("id", monotonicallyIncreasingId())
-            .withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(window1)).otherwise(col("Name")))
-            .orderBy("id").drop("id", "Employee_ID", "Job", "Home_city")
-            .write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=root&password=" +password)
-            .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "testtabl2")
+            val nf2 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
+
+            val df2 = df1.withColumn("id", monotonicallyIncreasingId())
+
+            df2.withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(nf2)).otherwise(col("Employee_ID")))
+            .withColumn("table", lit("w1task4b"))
+
+            .orderBy("id").drop("id", "Job_Code", "Job")
+            .filter(col("table") === "w1task4b")
+            .dropDuplicates()
+            .drop("table")
+            .write.format("jdbc").option("url", sqlCoun)
+            .option("driver", driver).option("dbtable", "w1task4b")
             .mode("overwrite").save()
 
-            // val window3 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
-            // df1.withColumn("id", monotonicallyIncreasingId())
-            // .withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(window1)).otherwise(col("Name")))
-            // .orderBy("id").drop("id", "Employee_ID", "City_code", "Name")
-            // .write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=root&password=")
-            // .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "testtabl2")
-            // .mode("overwrite").save()
+            df2.withColumn("table", lit("w1task4c"))
+            .orderBy("id").drop("id", "Employee_ID", "Name", "City_code", "Home_city")
+            .filter(col("table") === "w1task4c")
+            .dropDuplicates()
+            .drop("table")
+            .write.format("jdbc").option("url", sqlCoun)
+            .option("driver", driver).option("dbtable", "w1task4c")
+            .mode("overwrite").save()
 
-            println("Go Horse Go")
+            val nf3 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
+
+            val df3 = df1.withColumn("id", monotonicallyIncreasingId())
+
+            df3.withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(nf2)).otherwise(col("Employee_ID")))
+            .withColumn("table", lit("w1task4b"))
+
+            .orderBy("id").drop("id", "Job_Code", "Job", "Home_city")
+            .filter(col("table") === "w1task4b")
+            .dropDuplicates()
+            .drop("table")
+            .write.format("jdbc").option("url", sqlCoun)
+            .option("driver", driver).option("dbtable", "w1task4b")
+            .mode("overwrite").save()
+
+            df3.withColumn("table", lit("w1task4c"))
+            .orderBy("id").drop("id", "Employee_ID", "Name", "City_code", "Home_city")
+            .filter(col("table") === "w1task4c")
+            .dropDuplicates()
+            .drop("table")
+            .write.format("jdbc").option("url", sqlCoun)
+            .option("driver", driver).option("dbtable", "w1task4c")
+            .mode("overwrite").save()
+
+            df3.withColumn("table", lit("w1task4d"))
+            .orderBy("id").drop("id", "Employee_ID", "Name", "Job_Code", "Job")
+            .filter(col("table") === "w1task4d")
+            .dropDuplicates()
+            .drop("table")
+            .write.format("jdbc").option("url", sqlCoun)
+            .option("driver", driver).option("dbtable", "w1task4d")
+            .mode("overwrite").save()
+
+            println("Work 1, Task 4, Done")
 }
 
 val s0 = (System.currentTimeMillis() - t1)/1000
