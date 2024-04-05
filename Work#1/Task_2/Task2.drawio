@@ -1,0 +1,71 @@
+<mxfile host="app.diagrams.net" modified="2024-04-05T09:18:32.455Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0" etag="NsoSW63-mn4W-YJRnbQ8" version="24.2.1" type="device">
+  <diagram id="wFE0QG_FPsp0jaGvCLVb" name="Page-1">
+    <mxGraphModel dx="1562" dy="927" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="_5mSTuPxr-ZiKRkBDSY7-1" value="" style="swimlane;fontStyle=2;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=1;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;swimlaneFillColor=none;fontFamily=Permanent Marker;fontSize=16;points=[];verticalAlign=top;stackBorder=0;resizable=1;strokeWidth=2;sketch=1;disableMultiStroke=1;swimlaneLine=0;" parent="1" vertex="1">
+          <mxGeometry x="170" y="60" width="540" height="350" as="geometry" />
+        </mxCell>
+        <object label="Этап 1: Extract" status="New" id="_5mSTuPxr-ZiKRkBDSY7-2">
+          <mxCell style="swimlane;strokeWidth=2;fontFamily=Permanent Marker;html=0;startSize=1;verticalAlign=bottom;spacingBottom=5;points=[];childLayout=stackLayout;stackBorder=20;stackSpacing=20;resizeLast=0;resizeParent=1;horizontalStack=0;collapsible=0;sketch=1;strokeColor=none;fillStyle=solid;fillColor=#A0522D;" parent="_5mSTuPxr-ZiKRkBDSY7-1" vertex="1">
+            <mxGeometry y="28" width="180" height="322" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="1) Внутренние (сторонние) данные о клиентах" placeholders="1" id="_5mSTuPxr-ZiKRkBDSY7-3">
+          <mxCell style="whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#e1d5e7;fontStyle=1;spacingTop=0;rounded=1;arcSize=9;points=[];fontFamily=Permanent Marker;hachureGap=8;fillWeight=1;glass=0;shadow=0;strokeColor=#9673a6;" parent="_5mSTuPxr-ZiKRkBDSY7-2" vertex="1">
+            <mxGeometry x="20" y="21" width="140" height="80" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="2) Данные приложений SaaS или другие данные сторонних производителей" placeholders="1" id="_5mSTuPxr-ZiKRkBDSY7-4">
+          <mxCell style="whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#e1d5e7;fontStyle=1;spacingTop=0;rounded=1;arcSize=9;points=[];fontFamily=Permanent Marker;hachureGap=8;fillWeight=1;strokeColor=#9673a6;" parent="_5mSTuPxr-ZiKRkBDSY7-2" vertex="1">
+            <mxGeometry x="20" y="121" width="140" height="80" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="Этап 2: Transform" status="In progress" id="_5mSTuPxr-ZiKRkBDSY7-6">
+          <mxCell style="swimlane;strokeWidth=2;fontFamily=Permanent Marker;html=0;startSize=1;verticalAlign=bottom;spacingBottom=5;points=[];childLayout=stackLayout;stackBorder=20;stackSpacing=20;resizeLast=0;resizeParent=1;horizontalStack=0;collapsible=0;sketch=1;strokeColor=none;fillStyle=solid;fillColor=#006600;" parent="_5mSTuPxr-ZiKRkBDSY7-1" vertex="1">
+            <mxGeometry x="180" y="28" width="180" height="322" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="1) Очистка данных" placeholders="1" id="_5mSTuPxr-ZiKRkBDSY7-7">
+          <mxCell style="whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#fff2cc;fontStyle=1;spacingTop=0;rounded=1;arcSize=9;points=[];fontFamily=Permanent Marker;hachureGap=8;fillWeight=1;strokeColor=#d6b656;" parent="_5mSTuPxr-ZiKRkBDSY7-6" vertex="1">
+            <mxGeometry x="20" y="21" width="140" height="80" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="2) Агрегирование" placeholders="1" id="_5mSTuPxr-ZiKRkBDSY7-8">
+          <mxCell style="whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#fff2cc;fontStyle=1;spacingTop=0;rounded=1;arcSize=9;points=[];fontFamily=Permanent Marker;hachureGap=8;fillWeight=1;strokeColor=#d6b656;" parent="_5mSTuPxr-ZiKRkBDSY7-6" vertex="1">
+            <mxGeometry x="20" y="121" width="140" height="80" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="3) Вычисляйть новые показатели" placeholders="1" id="_5mSTuPxr-ZiKRkBDSY7-5">
+          <mxCell style="whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#fff2cc;fontStyle=1;spacingTop=0;rounded=1;arcSize=9;points=[];fontFamily=Permanent Marker;hachureGap=8;fillWeight=1;strokeColor=#d6b656;" parent="_5mSTuPxr-ZiKRkBDSY7-6" vertex="1">
+            <mxGeometry x="20" y="221" width="140" height="80" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="Этап3: Load" status="In progress" id="tz08d3p02yOF0dErdEsx-1">
+          <mxCell style="swimlane;strokeWidth=2;fontFamily=Permanent Marker;html=0;startSize=1;verticalAlign=bottom;spacingBottom=5;points=[];childLayout=stackLayout;stackBorder=20;stackSpacing=20;resizeLast=0;resizeParent=1;horizontalStack=0;collapsible=0;sketch=1;strokeColor=none;fillStyle=solid;fillColor=#006600;" vertex="1" parent="_5mSTuPxr-ZiKRkBDSY7-1">
+            <mxGeometry x="360" y="28" width="180" height="322" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="1) Хранилище данных или data lake" placeholders="1" id="tz08d3p02yOF0dErdEsx-2">
+          <mxCell style="whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#d5e8d4;fontStyle=1;spacingTop=0;rounded=1;arcSize=9;points=[];fontFamily=Permanent Marker;hachureGap=8;fillWeight=1;strokeColor=#82b366;" vertex="1" parent="tz08d3p02yOF0dErdEsx-1">
+            <mxGeometry x="20" y="21" width="140" height="80" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="2) Инструмент SaaS для маркетинга" placeholders="1" id="tz08d3p02yOF0dErdEsx-3">
+          <mxCell style="whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#d5e8d4;fontStyle=1;spacingTop=0;rounded=1;arcSize=9;points=[];fontFamily=Permanent Marker;hachureGap=8;fillWeight=1;strokeColor=#82b366;" vertex="1" parent="tz08d3p02yOF0dErdEsx-1">
+            <mxGeometry x="20" y="121" width="140" height="80" as="geometry" />
+          </mxCell>
+        </object>
+        <object label="3) Инструмент бизнес-аналитики" placeholders="1" id="tz08d3p02yOF0dErdEsx-4">
+          <mxCell style="whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#d5e8d4;fontStyle=1;spacingTop=0;rounded=1;arcSize=9;points=[];fontFamily=Permanent Marker;hachureGap=8;fillWeight=1;strokeColor=#82b366;" vertex="1" parent="tz08d3p02yOF0dErdEsx-1">
+            <mxGeometry x="20" y="221" width="140" height="80" as="geometry" />
+          </mxCell>
+        </object>
+        <mxCell id="tz08d3p02yOF0dErdEsx-9" value="Этап 1: Извлечение данных&lt;br&gt;&lt;br&gt;Каждая маркетинговая команда использует данные из разных источников:&lt;br&gt;1) Внутренние (сторонние) данные о клиентах: к ним относятся файлы с информацией о клиентах (CSV, Microsoft Excel, Google Sheets и т.д.), наборы данных с покупками клиентов и информацией о доставке (например, в локальной реляционной базе данных SQL или облачном хранилище, таком как Amazon S3, для транзакций электронной коммерции).&lt;br&gt;2) Данные приложений SaaS или другие данные сторонних производителей: В эту категорию входят электронные письма клиентов для CRM-платформ, таких как Hubspot и Salesforce, рекламные данные с Facebook ads и Google ads, взаимодействия с веб-сайтами из Google Analytics и информация о продуктах поставщика услуг электронной коммерции. &lt;br&gt;&lt;br&gt;Этап 2: Преобразование данных&lt;br&gt;&lt;br&gt;Преобразование данных включает в себя следующие этапы:&lt;br&gt;1) Очистка данных: Вы удаляете дублированные или поврежденные записи, отфильтровываете информацию, которая не нужна для маркетинговой деятельности, а также ошибки и несоответствия из ваших наборов данных.&lt;br&gt;2) Агрегирование данных: данные, которые собираются на этапе 1, часто слишком детализированы. Например не нужно, чтобы каждое событие, связанное с кликом клиента, демонстрировалось отдельно. Вместо этого нам нужно агрегированное общее количество кликов, чтобы определить, какая реклама показала наилучшие результаты.&lt;br&gt;3) Вычисляйть новые показатели: данные, которые извлекаются из различных источников, не всегда оптимизированы для анализа. Чтобы решить эту проблему, необходимо рассчитать свои маркетинговые показатели, такие как ARPU или пожизненная ценность клиента.&lt;br&gt;&lt;br&gt;Этап 3: Загрузка данных&lt;br&gt;&lt;br&gt;Загрузка данных, проще говоря, означает сохранение данных. Ваши варианты включают:&lt;br&gt;&lt;br&gt;1) Хранилище данных или data lake: Наилучший способ переместить очищенные данные в хранилище данных. Наличие данных в Snowflake или BigQuery поможет создать “единый источник достоверности”. Единое хранилище для всех ваших данных о клиентах, которое обеспечивает согласованность ваших данных. Хранилище данных также позволяет членам команды получать доступ к одним и тем же данным без ущерба для согласованности данных или дублирования работы с ETL.&lt;br&gt;2) Инструмент SaaS для маркетинга: используйте свои данные в инструменте&lt;br&gt; SaaS, чтобы подготовить их к маркетинговым кампаниям. Например, когда &lt;br&gt;создается набор данных, включающий всех, кто приобрел ваши последние &lt;br&gt;продукты, вы можете направить этот набор данных в Hubspot (список &lt;br&gt;адресов электронной почты) или Facebook Ads (аудитории) для проведения &lt;br&gt;гипертаргетированных кампаний&lt;br&gt;3) Инструмент бизнес-аналитики: загружая данные в такие инструменты, как PowerBI, Tableau или Google Data Studio, данные сразу же готовятся к анализу. Создавайте информационные панели с маркетинговыми показателями и ключевыми показателями эффективности, чтобы выявлять тенденции.&lt;br&gt;. &lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="458" width="680" height="620" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
