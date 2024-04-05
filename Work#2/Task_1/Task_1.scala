@@ -1,6 +1,7 @@
 /*
 chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\Working\W2\s2.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 */
+
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.functions.{col, collect_list, concat_ws}
 import org.apache.spark.sql.{DataFrame, SparkSession}
@@ -9,7 +10,7 @@ import org.apache.spark.sql.expressions.Window
 import java.io.{File, FileInputStream}
 import java.util.Properties
 
-val filePath = "C:/Users/Esdesu/Desktop/JreJre/ETLconfig.properties"
+val filePath = "C:/Users/Esdesu/Desktop/JreJre/ETL/config.properties"
 val prop = new Properties()
 val file = new File(filePath)
 val fis = new FileInputStream(file)
@@ -105,7 +106,7 @@ ENGINE=InnoDB
 val data = Seq("Кадры", "Риторта", "Микс")
 sqlexecute(s"insert into task04 VALUES ('${data(0)}','${data(1)}','${data(2)}')")
 
-val df1 = sc.parallelize(List( ("Конюшня", "Риторта", "Микс") )).toDF("Отдел", "Начальник", "Сотрудник")
+val df1 = sc.parallelize(List( ("Бухгалтерия", "Вася", "Петя") )).toDF("Отдел", "Начальник", "Сотрудник")
 df1.show()
 
 df1.write.format("jdbc").option("url", misqlCon)

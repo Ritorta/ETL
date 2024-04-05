@@ -6,11 +6,10 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.sql.functions.{col, collect_list, concat_ws}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.expressions.Window
-
 import java.io.{File, FileInputStream}
 import java.util.Properties
 
-val filePath = "C:/Users/Esdesu/Desktop/JreJre/ETLconfig.properties"
+val filePath = "C:/Users/Esdesu/Desktop/JreJre/ETL/config.properties"
 val prop = new Properties()
 val file = new File(filePath)
 val fis = new FileInputStream(file)
@@ -19,7 +18,7 @@ prop.load(fis)
 val login = prop.getProperty("login")
 val password = prop.getProperty("password")
 
-var misqlCon = s"jdbc:mysql://localhost:3306/spark?user=$login&password=$password"
+var sqlCoun = s"jdbc:mysql://localhost:3306/spark?user=$login&password=$password"
 var driver = "com.mysql.cj.jdbc.Driver"
 
 val t1 = System.currentTimeMillis()
