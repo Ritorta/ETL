@@ -40,8 +40,7 @@ if(1==1){
 			val columns_null = df1.select(df1.columns.map(c => count(when(col(c).isNull || col(c) === "" || col(c).isNaN, c)).alias(c)): _*)
 			columns_null.show()
 			
-			val df2
-			df2 = df1.na.drop()
+			val df2 = df1.na.drop()
 			df2.write.format("jdbc").option("url", misqlCon)
 				.option("driver", driver).option("dbtable", "w2t1a")
 				.mode("overwrite").save()
@@ -53,8 +52,13 @@ if(1==1){
 			val dataf_agg_col = t.reduce((df2, dataf) => df2.union(dataf))
 			dataf_agg_col.show()
 
-			val df3
-			df3 = df2.dropDuplicates()
+			val df3 = df2
+				.withColumn("Name",lower(col("Name")))
+				.withColumn("Nationality",lower(col("Nationality")))
+				.withColumn("Club",lower(col("Club")))
+				.withColumn("Preferred Foot",lower(col("Preferred Foot")))
+				.withColumn("Position",lower(col("Position")))
+				.dropDuplicates()
 			df3.write.format("jdbc").option("url", misqlCon)
 				.option("driver", driver).option("dbtable", "w2t1b")
 				.mode("overwrite").save()
