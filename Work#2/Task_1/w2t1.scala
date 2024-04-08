@@ -64,6 +64,22 @@ if(1==1){
 				.mode("overwrite").save()
 			df3.show()
 			
+			val df4 = df3 
+				.withColumn("Age Group", when(col("Age") < 20, "0-19") 
+				.when(col("Age") >= 20 && col("Age") < 30, "20-29") 
+				.when(col("Age") >= 30 && col("Age") < 36, "30-35") 
+				.otherwise("36+"))
+
+			// val agePlayerSum = df4.groupBy("Age Group").count() // Колонки без изменения названия
+			// val agePlayerSum = df4.groupBy("Age Group").agg(count("*").alias("Sum Players for Age")) // Меняет наименование последней колонки
+			val agePlayerSum = df4.groupBy("Age Group").count().toDF("Age Group Player", "Sum Players for Age") // Менет наименование обоих колонок
+			agePlayerSum.show()
+
+			df4.write.format("jdbc").option("url", misqlCon) 
+				.option("driver", driver).option("dbtable", "w2t1c") 
+				.mode("overwrite").save() 
+			df4.show()
+			
 }
 
 val s0 = (System.currentTimeMillis() - t1)/1000
