@@ -28,57 +28,57 @@ val t1 = System.currentTimeMillis()
 
 if(1==1){
 	var df = spark.read.option("delimiter",",")
-				.option("header", "true")
-				.csv("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#2/Task_1/fifa_s2.csv")
+		.option("header", "true")
+		.csv("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#2/Task_1/fifa_s2.csv")
 
-			val df1 = df
-			df1.write.format("jdbc").option("url", misqlCon)
-				.option("driver", driver).option("dbtable", "w2t1")
-				.mode("overwrite").save()
-			df1.show()
+	val df1 = df
+		df1.write.format("jdbc").option("url", misqlCon)
+			.option("driver", driver).option("dbtable", "w2t1")
+			.mode("overwrite").save()
+		df1.show()
 
-			val columns_null = df1.select(df1.columns.map(c => count(when(col(c).isNull || col(c) === "" || col(c).isNaN, c)).alias(c)): _*)
-			columns_null.show()
+	val columns_null = df1.select(df1.columns.map(c => count(when(col(c).isNull || col(c) === "" || col(c).isNaN, c)).alias(c)): _*)
+		columns_null.show()
 			
-			val df2 = df1.na.drop()
-			df2.write.format("jdbc").option("url", misqlCon)
-				.option("driver", driver).option("dbtable", "w2t1a")
-				.mode("overwrite").save()
-			df2.show()
+	val df2 = df1.na.drop()
+		df2.write.format("jdbc").option("url", misqlCon)
+			.option("driver", driver).option("dbtable", "w2t1a")
+			.mode("overwrite").save()
+		df2.show()
 
-			val columns = df2.columns.map(c => sum(col(c).isNull.cast("integer")).alias(c))
-			val dataf = df2.agg(columns.head, columns.tail:_*)
-			val t = dataf.columns.map(c => dataf.select(lit(c).alias("col_name"), col(c).alias("null_count")))
-			val dataf_agg_col = t.reduce((df2, dataf) => df2.union(dataf))
-			dataf_agg_col.show()
+	val columns = df2.columns.map(c => sum(col(c).isNull.cast("integer")).alias(c))
+	val dataf = df2.agg(columns.head, columns.tail:_*)
+	val t = dataf.columns.map(c => dataf.select(lit(c).alias("col_name"), col(c).alias("null_count")))
+	val dataf_agg_col = t.reduce((df2, dataf) => df2.union(dataf))
+		dataf_agg_col.show()
 
-			val df3 = df2
-				.withColumn("Name",lower(col("Name")))
-				.withColumn("Nationality",lower(col("Nationality")))
-				.withColumn("Club",lower(col("Club")))
-				.withColumn("Preferred Foot",lower(col("Preferred Foot")))
-				.withColumn("Position",lower(col("Position")))
-				.dropDuplicates()
-			df3.write.format("jdbc").option("url", misqlCon)
-				.option("driver", driver).option("dbtable", "w2t1b")
-				.mode("overwrite").save()
-			df3.show()
+	val df3 = df2
+		.withColumn("Name",lower(col("Name")))
+		.withColumn("Nationality",lower(col("Nationality")))
+		.withColumn("Club",lower(col("Club")))
+		.withColumn("Preferred Foot",lower(col("Preferred Foot")))
+		.withColumn("Position",lower(col("Position")))
+		.dropDuplicates()
+		df3.write.format("jdbc").option("url", misqlCon)
+			.option("driver", driver).option("dbtable", "w2t1b")
+			.mode("overwrite").save()
+		df3.show()
 			
-			val df4 = df3 
-				.withColumn("Age Group", when(col("Age") < 20, "0-19") 
-				.when(col("Age") >= 20 && col("Age") < 30, "20-29") 
-				.when(col("Age") >= 30 && col("Age") < 36, "30-35") 
-				.otherwise("36+"))
+	val df4 = df3 
+		.withColumn("Age Group", when(col("Age") < 20, "0-19") 
+		.when(col("Age") >= 20 && col("Age") < 30, "20-29") 
+		.when(col("Age") >= 30 && col("Age") < 36, "30-35") 
+		.otherwise("36+"))
 
-			// val agePlayerSum = df4.groupBy("Age Group").count() // Колонки без изменения названия
-			// val agePlayerSum = df4.groupBy("Age Group").agg(count("*").alias("Sum Players for Age")) // Меняет наименование последней колонки
-			val agePlayerSum = df4.groupBy("Age Group").count().toDF("Age Group Player", "Sum Players for Age") // Менет наименование обоих колонок
-			agePlayerSum.show()
+	// val agePlayerSum = df4.groupBy("Age Group").count() // Колонки без изменения названия
+	// val agePlayerSum = df4.groupBy("Age Group").agg(count("*").alias("Sum Players for Age")) // Меняет наименование последней колонки
+	val agePlayerSum = df4.groupBy("Age Group").count().toDF("Age Group Player", "Sum Players for Age") // Менет наименование обоих колонок
+		agePlayerSum.show()
 
-			df4.write.format("jdbc").option("url", misqlCon) 
-				.option("driver", driver).option("dbtable", "w2t1c") 
-				.mode("overwrite").save() 
-			df4.show()
+		df4.write.format("jdbc").option("url", misqlCon) 
+			.option("driver", driver).option("dbtable", "w2t1c") 
+			.mode("overwrite").save() 
+		df4.show()
 			
 }
 

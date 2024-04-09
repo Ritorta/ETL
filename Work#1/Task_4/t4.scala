@@ -25,31 +25,31 @@ val t1 = System.currentTimeMillis()
 
 if(1==1){
     var df1 = spark.read.format("com.crealytics.spark.excel")
-            .option("sheetName", "Sheet1")
-            .option("useHeader", "false")
-            .option("treatEmptyValuesAsNulls", "false")
-            .option("inferSchema", "true").option("addColorColumns", "true")
-            .option("usePlainNumberFormat","true")
-            .option("startColumn", 0)
-            .option("endColumn", 99)
-            .option("timestampFormat", "MM-dd-yyyy HH:mm:ss")
-            .option("maxRowsInMemory", 20)
-            .option("excerptSize", 10)
-            .option("header", "true")
-            .format("excel")
-            .load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#1/Task_4/w1t4.xlsx")
-            df1.show()
+        .option("sheetName", "Sheet1")
+        .option("useHeader", "false")
+        .option("treatEmptyValuesAsNulls", "false")
+        .option("inferSchema", "true").option("addColorColumns", "true")
+        .option("usePlainNumberFormat","true")
+        .option("startColumn", 0)
+        .option("endColumn", 99)
+        .option("timestampFormat", "MM-dd-yyyy HH:mm:ss")
+        .option("maxRowsInMemory", 20)
+        .option("excerptSize", 10)
+        .option("header", "true")
+        .format("excel")
+        .load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#1/Task_4/w1t4.xlsx")
+    df1.show()
 
-            df1.filter(col("Employee_ID").isNotNull).select("Employee_ID", "Job_code")
+        df1.filter(col("Employee_ID").isNotNull).select("Employee_ID", "Job_code")
             .write.format("jdbc").option("url", sqlCoun)
             .option("driver", driver).option("dbtable", "w1task4a")
             .mode("overwrite").save()
 
-            val nf2 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
+    val nf2 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
 
-            val df2 = df1.withColumn("id", monotonicallyIncreasingId())
+    val df2 = df1.withColumn("id", monotonicallyIncreasingId())
 
-            df2.withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(nf2)).otherwise(col("Employee_ID")))
+        df2.withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(nf2)).otherwise(col("Employee_ID")))
             .withColumn("table", lit("w1task4b"))
 
             .orderBy("id").drop("id", "Job_Code", "Job")
@@ -60,7 +60,7 @@ if(1==1){
             .option("driver", driver).option("dbtable", "w1task4b")
             .mode("overwrite").save()
 
-            df2.withColumn("table", lit("w1task4c"))
+        df2.withColumn("table", lit("w1task4c"))
             .orderBy("id").drop("id", "Employee_ID", "Name", "City_code", "Home_city")
             .filter(col("table") === "w1task4c")
             .dropDuplicates()
@@ -69,11 +69,11 @@ if(1==1){
             .option("driver", driver).option("dbtable", "w1task4c")
             .mode("overwrite").save()
 
-            val nf3 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
+    val nf3 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
 
-            val df3 = df1.withColumn("id", monotonicallyIncreasingId())
+    val df3 = df1.withColumn("id", monotonicallyIncreasingId())
 
-            df3.withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(nf2)).otherwise(col("Employee_ID")))
+        df3.withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(nf2)).otherwise(col("Employee_ID")))
             .withColumn("table", lit("w1task4b"))
 
             .orderBy("id").drop("id", "Job_Code", "Job", "Home_city")
@@ -84,7 +84,7 @@ if(1==1){
             .option("driver", driver).option("dbtable", "w1task4b")
             .mode("overwrite").save()
 
-            df3.withColumn("table", lit("w1task4c"))
+        df3.withColumn("table", lit("w1task4c"))
             .orderBy("id").drop("id", "Employee_ID", "Name", "City_code", "Home_city")
             .filter(col("table") === "w1task4c")
             .dropDuplicates()
@@ -93,7 +93,7 @@ if(1==1){
             .option("driver", driver).option("dbtable", "w1task4c")
             .mode("overwrite").save()
 
-            df3.withColumn("table", lit("w1task4d"))
+        df3.withColumn("table", lit("w1task4d"))
             .orderBy("id").drop("id", "Employee_ID", "Name", "Job_Code", "Job")
             .filter(col("table") === "w1task4d")
             .dropDuplicates()
@@ -102,7 +102,7 @@ if(1==1){
             .option("driver", driver).option("dbtable", "w1task4d")
             .mode("overwrite").save()
 
-            println("Work 1, Task 4, Done")
+    println("Work 1, Task 4, Done")
 }
 
 val s0 = (System.currentTimeMillis() - t1)/1000
