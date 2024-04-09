@@ -79,7 +79,8 @@ if(1==1){
 			.option("driver", driver).option("dbtable", "w2t1c") 
 			.mode("overwrite").save() 
 		df4.show()
-			
+		
+	println("Work 2, Task 1, Done")
 }
 
 val s0 = (System.currentTimeMillis() - t1)/1000
