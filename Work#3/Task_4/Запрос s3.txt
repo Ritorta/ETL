@@ -1,0 +1,27 @@
+select ei, from_unixtime(StatusTime) StatusTime, 
+            ifnull((lead(StatusTime) over(partition by ei order by StatusTime) - StatusTime) / 3600, 0)  Длительность, 
+            case when 'status' is null then @prev1 
+            else @prev1:='status'
+            end 'status',
+            case when 'group' is null then @prev2 
+            else @prev2:='group'
+            end 'group'
+        from
+        (select ei, StatusTime, 'status', 
+            if (row_number() over (partition by ei order by StatusTime) = 1 and Назначение is null, '', 'group') 'group' 
+        from
+        (select distinct a.objectid ei, a.restime StatusTime, 'status', 'group', Назначение, 
+            (select @prev1:=''),
+            (select @prev2:='') from
+            (select distinct a.objectId, a.restime from spark.sem3 as a
+            where fieldname in ('status', 'gname2')) a
+        left join 
+            (select distinct objectId, restime, fieldvalue 'status' from spark.sem3
+            where fieldname in ('status')) a1
+        on a.objectid = a1.objectid and a.restime = a1.restime
+        left join 
+            (select distinct objectId, restime, fieldvalue 'group', 1 Назначение from spark.sem3
+            where fieldname in ('gname2')) a2
+        on a.objectid = a2.objectid and a.restime = a2.restime) b1 ) b2
+        order by 1, 2
+        
