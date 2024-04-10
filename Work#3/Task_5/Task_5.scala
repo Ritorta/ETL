@@ -1,5 +1,5 @@
 /*
-chcp 65001 && spark-shell -i C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#3/Task_5/Task_5.scala" --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
+chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#3\Task_5\Task_5.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 */
 
 import org.apache.spark.internal.Logging
@@ -11,23 +11,30 @@ import scala.io.Source
 
 sc.setLogLevel("ERROR")
 
-val lines = Source.fromFile("C:/Users/Esdesu/Desktop/JreJre/ETL/config.txt").getLines.toList
-println("test "+lines(0))
+val login = Source.fromFile("C:/Users/Esdesu/Desktop/JreJre/ETL/config.txt").getLines.toList
+
 
 val t1 = System.currentTimeMillis()
 
-var df = spark.read.option("delimiter",",")
-		.option("header", "true")
-		.csv("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#3/Task_5/s3.xlsx")
-	df.show()
+if(1==1){
+	var df = spark.read.option("delimiter",",")
+			.option("useHeader", "false")
+	 		.option("inferSchema", "true").option("addColorColumns", "true")
+			.option("usePlainNumberFormat","true")
+			.option("maxRowsInMemory", 20)
+        	.option("excerptSize", 10)
+			.option("header", "true")
+			.format("excel")
+			.load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#3/Task_5/s3.xlsx")
+		df.show()
+	val df1 = df
+			df1.write.format("jdbc").option("url", login(0))
+				.option("driver", login(1)).option("dbtable", "w3t5")
+				.mode("overwrite").save()
+			df1.show()
 
-// val df1 = df
-// 		df1.write.format("jdbc").option("url", misqlCon)
-// 			.option("driver", driver).option("dbtable", "w2t1")
-// 			.mode("overwrite").save()
-// 		df1.show()
-
-println("Work 3, Task 5, Done")
+	println("Work 3, Task 5, Done")
+}
 
 val s0 = (System.currentTimeMillis() - t1)/1000
 val s = s0 % 60
