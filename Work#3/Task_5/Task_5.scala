@@ -13,27 +13,22 @@ sc.setLogLevel("ERROR")
 
 val login = Source.fromFile("C:/Users/Esdesu/Desktop/JreJre/ETL/config.txt").getLines.toList
 
-
 val t1 = System.currentTimeMillis()
 
 if(1==1){
 	var df = spark.read.option("delimiter",",")
-			.option("useHeader", "false")
-	 		.option("inferSchema", "true").option("addColorColumns", "true")
-			.option("usePlainNumberFormat","true")
-			.option("maxRowsInMemory", 20)
-        	.option("excerptSize", 10)
-			.option("header", "true")
-			.format("excel")
-			.load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#3/Task_5/s3.xlsx")
-		df.show()
-	val df1 = df
-			df1.write.format("jdbc").option("url", login(0))
-				.option("driver", login(1)).option("dbtable", "w3t5")
-				.mode("overwrite").save()
-			df1.show()
+		.option("inferSchema", "true")			
+		.option("header", "true")
+		.format("excel")
+		.load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#3/Task_5/s3.xlsx")
 
-	println("Work 3, Task 5, Done")
+	val df1 = df
+		df1.write.format("jdbc").option("url", login(0))
+			.option("driver", login(1)).option("dbtable", "w3t5")
+			.mode("overwrite").save()
+		df1.show()
+
+	println("Work 3, Task 5, Successful Load and Save")
 }
 
 val s0 = (System.currentTimeMillis() - t1)/1000

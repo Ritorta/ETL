@@ -102,7 +102,7 @@ if(1==1){
             .option("driver", driver).option("dbtable", "w1task4d")
             .mode("overwrite").save()
 
-    println("Work 1, Task 4, Done")
+    println("Work 1, Task 4, Successful Load and Save")
 }
 
 val s0 = (System.currentTimeMillis() - t1)/1000
