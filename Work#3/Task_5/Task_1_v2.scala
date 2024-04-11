@@ -36,7 +36,7 @@ if(1==1){
     val df_group = df2.distinct().where(col("fieldname") === "GNAME2")
     .select("objectid", "restime", "fieldvalue")
     .withColumnRenamed("fieldvalue", "Group")
-    withColumn("Destination", lit("1".cast("integer")))
+    .withColumn("Destination", lit("1").cast("integer"))
 
     val df_status = df2.distinct().where(col("fieldname") === "Status")
     .select("objectid", "restime", "fieldvalue")
@@ -46,21 +46,21 @@ if(1==1){
     .select("objectid", "restime").distinct()
 
     val df_inner = df_sg.as("a")
-    .join(df_status("a1"),col("a.ojecttid") === col("a1.objectid") && col("a.restime") === col("a1.restime"),"left")
-    .join(df_status("a2"),col("a.ojecttid") === col("a2.objectid") && col("a.restime") === col("a2.restime"),"left")
+    .join(df_status.as("a1"),col("a.objectid") === col("a1.objectid") && col("a.restime") === col("a1.restime"),"left")
+    .join(df_group.as("a2"),col("a.objectid") === col("a2.objectid") && col("a.restime") === col("a2.restime"),"left")
     .select(col("a.objectid"),col("a.restime"),col("a1.Status"),col("a2.Group"),col("a2.Destination"))
     .withColumnRenamed("objectid", "Tiket")
     .withColumnRenamed("restime", "StatusTime")
     .distinct()
 
     val df_outer = df_inner.select(col("Tiket"),col("StatusTime"),col("Status"),
-    when(row_number().over(Window.paratitionBy(col("Tiket")).orberBy(col("StatusTime"))) === 1 && col("Destination").isNull,"").otherwise(col("Group")).alias("Group"),col("Destination"))
+    when(row_number().over(Window.paratitionBy(col("Tiket")).orderBy(col("StatusTime"))) === 1 && col("Destination").isNull,"").otherwise(col("Group")).alias("Group"),col("Destination"))
 
-    val df_result = df_outer.select(col("Tiket")),from_unixtime(col("StatusTime")).alias("StatusTime"),((lead(col("StatusTime"), 1)
-    .over(Window.paratitionBy(col("Tiket")).orderBy(col("StatusTime"))) - col("StatusTime") / 3600).alias("Timers"),
-    last(col("Status"), true).over(Window.paratitionBy(col("Tiket")).orberBy(col("StatisTime")))
+    val df_result = df_outer.select(col("Tiket"),from_unixtime(col("StatusTime")).alias("StatusTime"),((lead(col("StatusTime"), 1)
+    .over(Window.paratitionBy(col("Tiket")).orderBy(col("StatusTime"))) - col("StatusTime")) / 3600).alias("Timers"),
+    last(col("Status"), true).over(Window.paratitionBy(col("Tiket")).orderBy(col("StatisTime")))
     .alias("Status"),
-    last(col("Group"), true).over(Window.paratitionBy(col("Tiket")).orberBy(col("StatisTime")))
+    last(col("Group"), true).over(Window.paratitionBy(col("Tiket")).orderBy(col("StatisTime")))
     .alias("Group"),col("Destination"))
     .withColumn("Timers", round(col("Timers"), 4))
 
