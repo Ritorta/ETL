@@ -1,5 +1,5 @@
 /*
-chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#3\Task_4\Task_1.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
+chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#3\Task_4\Task_1_v1.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 */
 
 import org.apache.spark.internal.Logging
@@ -24,7 +24,7 @@ if(1==1){
 
 	val df1 = df
 		df1.write.format("jdbc").option("url", login(0))
-			.option("driver", login(1)).option("dbtable", "w3t5")
+			.option("driver", login(1)).option("dbtable", "w3t5v1")
 			.mode("overwrite").save()
 		df1.show()
 
@@ -47,14 +47,14 @@ if(1==1){
 				(SELECT @PREF1:=''), 
 				(SELECT @PREF2:='') 
 				FROM 
-				(SELECT DISTINCT a.objectid, a.restime FROM spark.w3t5 AS a
+				(SELECT DISTINCT a.objectid, a.restime FROM spark.w3t5v1 AS a
 				WHERE fieldname IN ('status' AND 'GNAME2')) AS a
 				LEFT JOIN 
-					(SELECT DISTINCT `objectid`, `restime`, `fieldvalue` 'status' FROM spark.w3t5
+					(SELECT DISTINCT `objectid`, `restime`, `fieldvalue` 'status' FROM spark.w3t5v1
 					WHERE fieldname IN ('status')) AS a1
 				ON a.objectid = a1.objectid AND a.restime = a1.restime
 				LEFT JOIN 
-					(SELECT DISTINCT `objectid`, `restime`, `fieldvalue` 'group', 1 'Destination' FROM spark.w3t5
+					(SELECT DISTINCT `objectid`, `restime`, `fieldvalue` 'group', 1 'Destination' FROM spark.w3t5v1
 					WHERE fieldname IN ('GNAME2')) AS a2
 				ON a.objectid = a2.objectid AND a.restime = a2.restime) AS b1
 				ORDER BY 1, 2) AS b2
@@ -62,7 +62,7 @@ if(1==1){
 		.load()
 		
 		df2.write.format("jdbc").option("url", login(0))
-			.option("driver", login(1)).option("dbtable", "w3t5a")
+			.option("driver", login(1)).option("dbtable", "w3t5v1a")
 			.mode("overwrite").save()
 		df2.show()
 
@@ -85,17 +85,17 @@ if(1==1){
 			ELSE `status`
 			END,
 			' -> ', `group`, '. ' SEPARATOR '\r\n') AS 'new format'
-			FROM spark.w3t5a
+			FROM spark.w3t5v1a
 			GROUP BY 1
 			""")
 		.load()
 		
 		df3.write.format("jdbc").option("url", login(0))
-			.option("driver", login(1)).option("dbtable", "w3t5b")
+			.option("driver", login(1)).option("dbtable", "w3t5v1b")
 			.mode("overwrite").save()
 		df3.show()
 
-	println("Work 3, Task 5, Successful Load and Save")
+	println("Work 3, Task 4, Successful Load and Save")
 }
 
 val s0 = (System.currentTimeMillis() - t1)/1000
