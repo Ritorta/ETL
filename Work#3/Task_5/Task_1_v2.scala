@@ -60,16 +60,14 @@ if(1==1){
         .over(Window.partitionBy(col("Tiket")).orderBy(col("StatusTime"))) - col("StatusTime")) / 3600).alias("Timers"),last(col("Status"), true)
         .over(Window.partitionBy(col("Tiket")).orderBy(col("StatusTime")))
         .alias("Status"),last(col("Group"), true).over(Window.partitionBy(col("Tiket")).orderBy(col("StatusTime")))
-        .alias("Group"))
+        .alias("Group"),col("Destination"))
         .withColumn("Timers", coalesce(col("Timers"), lit(0)))
         .withColumn("Timers", round(col("Timers"), 4))
-    
-    val df_result_no_null = df_result.na.fill("")
 
     df_result.write.format("jdbc").option("url", login(0))
         .option("driver", login(1)).option("dbtable", "w3t5v2a")
 		.mode("overwrite").save()
-    df_result_no_null.show()
+    df_result.show()
     
 	println("Work 3, Task 5, Successful Load and Save")
 }
