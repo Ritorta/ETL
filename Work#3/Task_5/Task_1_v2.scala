@@ -34,51 +34,42 @@ if(1==1){
         .load()
 
     val df_group = df2.distinct().where(col("fieldname") === "GNAME2")
-    .select("objectid", "restime", "fieldvalue")
-    .withColumnRenamed("fieldvalue", "Group")
-    .withColumn("Destination", lit("1").cast("integer"))
+        .select("objectid", "restime", "fieldvalue")
+        .withColumnRenamed("fieldvalue", "Group")
+        .withColumn("Destination", lit("1").cast("integer"))
 
     val df_status = df2.distinct().where(col("fieldname") === "Status")
-    .select("objectid", "restime", "fieldvalue")
-    .withColumnRenamed("fieldvalue", "Status")
+        .select("objectid", "restime", "fieldvalue")
+        .withColumnRenamed("fieldvalue", "Status")
 
     val df_sg = df2.filter((col("fieldname") isin ("status", "GNAME2")))
-    .select("objectid", "restime").distinct()
+        .select("objectid", "restime").distinct()
 
     val df_inner = df_sg.as("a")
-    .join(df_status.as("a1"),col("a.objectid") === col("a1.objectid") && col("a.restime") === col("a1.restime"),"left")
-    .join(df_group.as("a2"),col("a.objectid") === col("a2.objectid") && col("a.restime") === col("a2.restime"),"left")
-    .select(col("a.objectid"),col("a.restime"),col("a1.Status"),col("a2.Group"),col("a2.Destination"))
-    .withColumnRenamed("objectid", "Tiket")
-    .withColumnRenamed("restime", "StatusTime")
-    .distinct()
+        .join(df_status.as("a1"),col("a.objectid") === col("a1.objectid") && col("a.restime") === col("a1.restime"),"left")
+        .join(df_group.as("a2"),col("a.objectid") === col("a2.objectid") && col("a.restime") === col("a2.restime"),"left")
+        .select(col("a.objectid"),col("a.restime"),col("a1.Status"),col("a2.Group"),col("a2.Destination"))
+        .withColumnRenamed("objectid", "Tiket")
+        .withColumnRenamed("restime", "StatusTime")
+        .distinct()
 
-    val df_outer = df_inner.select(col("Tiket"),col("StatusTime"),col("Status"),
-    when(row_number().over(Window.paratitionBy(col("Tiket")).orderBy(col("StatusTime"))) === 1 && col("Destination").isNull,"").otherwise(col("Group")).alias("Group"),col("Destination"))
-
+    val df_outer = df_inner.select(col("Tiket"),col("StatusTime"),col("Status"),when(row_number().over(Window.partitionBy(col("Tiket"))
+        .orderBy(col("StatusTime"))) === 1 && col("Destination").isNull,"").otherwise(col("Group")).alias("Group"),col("Destination"))
+    
     val df_result = df_outer.select(col("Tiket"),from_unixtime(col("StatusTime")).alias("StatusTime"),((lead(col("StatusTime"), 1)
-    .over(Window.paratitionBy(col("Tiket")).orderBy(col("StatusTime"))) - col("StatusTime")) / 3600).alias("Timers"),
-    last(col("Status"), true).over(Window.paratitionBy(col("Tiket")).orderBy(col("StatisTime")))
-    .alias("Status"),
-    last(col("Group"), true).over(Window.paratitionBy(col("Tiket")).orderBy(col("StatisTime")))
-    .alias("Group"),col("Destination"))
-    .withColumn("Timers", round(col("Timers"), 4))
+        .over(Window.partitionBy(col("Tiket")).orderBy(col("StatusTime"))) - col("StatusTime")) / 3600).alias("Timers"),last(col("Status"), true)
+        .over(Window.partitionBy(col("Tiket")).orderBy(col("StatusTime")))
+        .alias("Status"),last(col("Group"), true).over(Window.partitionBy(col("Tiket")).orderBy(col("StatusTime")))
+        .alias("Group"))
+        .withColumn("Timers", coalesce(col("Timers"), lit(0)))
+        .withColumn("Timers", round(col("Timers"), 4))
+    
+    val df_result_no_null = df_result.na.fill("")
 
     df_result.write.format("jdbc").option("url", login(0))
         .option("driver", login(1)).option("dbtable", "w3t5v2a")
 		.mode("overwrite").save()
-
-    val df3 = spark.read.format("jdbc").option("url", login(0))
-        .option("driver", login(1))
-        .option("dbtable", "w3t5v2a")
-        .load()
-    df3.orderBy(asc("StatusTime"))
-    .groupBy("Tiket")
-    .agg(array_join(collect_list(concat(col("SstatusTime"),lit(' '),col("Status"),lit(' '),col("Group"))),delimiter="\n").alias("Destination"))
-    .orderBy(asc("Tiket"))
-    .write.format("jdbc").option("url", login(0))
-        .option("driver", login(1)).option("dbtable", "w3t5v2b")
-		.mode("overwrite").save()
+    df_result_no_null.show()
     
 	println("Work 3, Task 5, Successful Load and Save")
 }
