@@ -25,7 +25,6 @@ if(1==1){
 		df1.write.format("jdbc").option("url", login(0))
 			.option("driver", login(1)).option("dbtable", "w3t5v2")
 			.mode("overwrite").save()
-        println("-/-/-Data Base Load and Save-\\-\\-")
 		df1.show()
 
     val df2 = spark.read.format("jdbc").option("url", login(0))
@@ -69,7 +68,33 @@ if(1==1){
 		.mode("overwrite").save()
     df_result.show()
     
+	println("W")
+
+    val df3 = spark.read.format("jdbc").option("url", login(0))
+        .option("driver", login(1))
+        .option("dbtable", "w3t5v2a")
+        .load()
+
+    val df3_concat = df3.groupBy("Tiket")
+        .agg(concat_ws("\r\n", collect_list(concat_ws(", ",when(date_format(col("StatusTime"), "yyyy-MM-dd") === current_date(),date_format(col("StatusTime"), "yyyy-MM-dd HH:mm:ss"))
+        .otherwise(date_format(col("StatusTime"), "dd-MM-yyyy HH:mm")),when(col("Status") === "Зарегистрирован", "З")
+        .when(col("Status") === "Назначен", "Н")
+        .when(col("Status") === "В работе", "ВР")
+        .when(col("Status") === "Закрыт", "ЗТ")
+        .when(col("Status") === "Исследование ситуации", "ИС")
+        .when(col("Status") === "Решен", "Р")
+        .otherwise(col("Status")),col("Group"))))
+        .alias("new format"))
+        .withColumn("new format", concat(lit("->"), col("new format")))
+        .withColumn("Tiket",col("Tiket"))
+        
+    df3_concat.write.format("jdbc").option("url", login(0))
+        .option("driver", login(1)).option("dbtable", "w3t5v2b")
+        .mode("overwrite").save()
+    df3_concat.show()
+    
 	println("Work 3, Task 5, Successful Load and Save")
+
 }
 
 val s0 = (System.currentTimeMillis() - t1)/1000
