@@ -85,8 +85,8 @@ if(1==1){
         .when(col("Status") === "Решен", "Р —> ")
         .otherwise(col("Status")),col("Group"))))
         .alias("new format"))
+        .withColumn("new format", concat(col("new format"),lit(".")))
         .withColumn("Tiket",col("Tiket"))
-      
 
     df3_concat.write.format("jdbc").option("url", login(0))
         .option("driver", login(1)).option("dbtable", "w3t5v2b")
