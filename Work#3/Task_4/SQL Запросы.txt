@@ -1,0 +1,50 @@
+SQL запрос №1:
+
+SELECT `tiket`, FROM_UNIXTIME(`StatusTime`) `StatusTime`, 
+	IFNULL((LEAD(`StatusTime`) OVER(PARTITION BY `tiket` ORDER BY `StatusTime`) - `StatusTime`) / 3600, 0)  AS Timers,
+	CASE WHEN `status` IS NULL THEN @PREF1
+	ELSE @PREF1:=`status`
+	END `status`,
+	CASE WHEN `group` IS NULL THEN @PREF2
+	ELSE @PREF2:=`group`
+	END `group`
+FROM 
+(SELECT `tiket`, `StatusTime`, `status`, 
+IF(ROW_NUMBER() OVER(PARTITION BY `tiket` ORDER BY `StatusTime`) = 1 AND 'Destination' IS NULL, '', `group`) `group`
+FROM
+(SELECT DISTINCT a.objectid `tiket`, a.restime `StatusTime`, `status`, `group`, 'Destination', 
+(SELECT @PREF1:=''), 
+(SELECT @PREF2:='') 
+FROM 
+(SELECT DISTINCT a.objectid, a.restime FROM spark.w3t5 AS a
+WHERE fieldname IN ('status' AND 'GNAME2')) AS a
+LEFT JOIN 
+	(SELECT DISTINCT `objectid`, `restime`, `fieldvalue` 'status' FROM spark.w3t5
+	WHERE fieldname IN ('status')) AS a1
+ON a.objectid = a1.objectid AND a.restime = a1.restime
+LEFT JOIN 
+	(SELECT DISTINCT `objectid`, `restime`, `fieldvalue` 'group', 1 'Destination' FROM spark.w3t5
+	WHERE fieldname IN ('GNAME2')) AS a2
+ON a.objectid = a2.objectid AND a.restime = a2.restime) AS b1
+ORDER BY 1, 2) AS b2
+
+SQL запрос №2:
+
+SELECT `tiket`, GROUP_CONCAT(' ', 
+CASE 
+	WHEN DATE(`StatusTime`) = CURDATE() THEN DATE_FORMAT(`StatusTime`, '%Y-%m-%d %H:%i:%s')
+ELSE DATE_FORMAT(`StatusTime`, '%d-%m-%Y %H:%i')
+END, 
+', ', 
+CASE 
+	WHEN `status` = 'Зарегистрирован' THEN 'З'
+	WHEN `status` = 'Назначен' THEN 'Н'
+	WHEN `status` = 'В работе' THEN 'ВР'
+	WHEN `status` = 'Закрыт' THEN 'ЗТ'
+	WHEN `status` = 'Исследование ситуации' THEN 'ИС'
+	WHEN `status` = 'Решен' THEN 'Р'
+ELSE `status`
+END,
+' -> ', `group`, '. ' SEPARATOR '\r\n') AS 'new format'
+FROM spark.w3t5a
+GROUP BY 1

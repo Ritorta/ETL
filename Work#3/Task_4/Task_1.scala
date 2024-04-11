@@ -1,5 +1,5 @@
 /*
-chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#3\Task_5\Task_5.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
+chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#3\Task_4\Task_1.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 */
 
 import org.apache.spark.internal.Logging
@@ -20,7 +20,7 @@ if(1==1){
 		.option("inferSchema", "true")			
 		.option("header", "true")
 		.format("excel")
-		.load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#3/Task_5/s3.xlsx")
+		.load("C:/Users/Esdesu/Desktop/JreJre/ETL/HomeWork/ETL/Work#3/Task_4/s3.xlsx")
 
 	val df1 = df
 		df1.write.format("jdbc").option("url", login(0))
@@ -61,10 +61,39 @@ if(1==1){
 			""")
 		.load()
 		
-		 df2.write.format("jdbc").option("url", login(0))
+		df2.write.format("jdbc").option("url", login(0))
 			.option("driver", login(1)).option("dbtable", "w3t5a")
 			.mode("overwrite").save()
 		df2.show()
+
+	val df3 = spark.read.format("jdbc").option("url", login(0))		
+		.option("driver", login(1))
+		.option("query","""
+			SELECT `tiket`, GROUP_CONCAT(' ', 
+			CASE 
+				WHEN DATE(`StatusTime`) = CURDATE() THEN DATE_FORMAT(`StatusTime`, '%Y-%m-%d %H:%i:%s')
+			ELSE DATE_FORMAT(`StatusTime`, '%d-%m-%Y %H:%i')
+			END, 
+			', ', 
+			CASE 
+				WHEN `status` = 'Зарегистрирован' THEN 'З'
+				WHEN `status` = 'Назначен' THEN 'Н'
+				WHEN `status` = 'В работе' THEN 'ВР'
+				WHEN `status` = 'Закрыт' THEN 'ЗТ'
+				WHEN `status` = 'Исследование ситуации' THEN 'ИС'
+				WHEN `status` = 'Решен' THEN 'Р'
+			ELSE `status`
+			END,
+			' -> ', `group`, '. ' SEPARATOR '\r\n') AS 'new format'
+			FROM spark.w3t5a
+			GROUP BY 1
+			""")
+		.load()
+		
+		df3.write.format("jdbc").option("url", login(0))
+			.option("driver", login(1)).option("dbtable", "w3t5b")
+			.mode("overwrite").save()
+		df3.show()
 
 	println("Work 3, Task 5, Successful Load and Save")
 }
