@@ -75,18 +75,16 @@ if(1==1){
 
 val df3_concat = df3.groupBy("Tiket")
     .agg(concat_ws(".\r\n", collect_list(concat_ws(", ",when(date_format(col("StatusTime"), "yyyy-MM-dd") === current_date(),date_format(col("StatusTime"), "yyyy-MM-dd HH:mm:ss"))
-    .otherwise(date_format(col("StatusTime"), "dd-MM-yyyy HH:mm")),when(col("Status") === "Зарегистрирован", "З")
+    .otherwise(date_format(col("StatusTime"), "dd-MM-yyyy HH:mm")),
+    concat_ws(" -> ",when(col("Status") === "Зарегистрирован", "З")
     .when(col("Status") === "Назначен", "Н")
     .when(col("Status") === "В работе", "ВР")
     .when(col("Status") === "Закрыт", "ЗТ")
     .when(col("Status") === "Исследование ситуации", "ИС")
-    .when(col("Status") === "Решен", "Р")
-    .otherwise(col("Status")),concat(lit(" -> "),col("Group")))))
+    .when(col("Status") === "Решен", "Р"),col("Group")))))
     .alias("new format"))
     .withColumn("new format", concat(col("new format"),lit(".")))
-    //.withColumn("new format", regexp_replace(col("new format"), ", ", ""))
     .withColumn("Tiket",col("Tiket"))
-
     df3_concat.write.format("jdbc").option("url", login(0))
         .option("driver", login(1)).option("dbtable", "w3t5v2b")
         .mode("overwrite").save()
