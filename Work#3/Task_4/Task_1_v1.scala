@@ -41,9 +41,9 @@ if(1==1){
 					END `group`
 				FROM 
 				(SELECT `tiket`, `StatusTime`, `status`, 
-				IF(ROW_NUMBER() OVER(PARTITION BY `tiket` ORDER BY `StatusTime`) = 1 AND 'Destination' IS NULL, '', `group`) `group`
+				IF(ROW_NUMBER() OVER(PARTITION BY `tiket` ORDER BY `StatusTime`) = 1 AND `Destination` IS NULL, '', `group`) `group`
 				FROM
-				(SELECT DISTINCT a.objectid `tiket`, a.restime `StatusTime`, `status`, `group`, 'Destination', 
+				(SELECT DISTINCT a.objectid `tiket`, a.restime `StatusTime`, `status`, `group`, `Destination`, 
 				(SELECT @PREF1:=''), 
 				(SELECT @PREF2:='') 
 				FROM 
@@ -54,7 +54,7 @@ if(1==1){
 					WHERE fieldname IN ('status')) AS a1
 				ON a.objectid = a1.objectid AND a.restime = a1.restime
 				LEFT JOIN 
-					(SELECT DISTINCT `objectid`, `restime`, `fieldvalue` 'group', 1 'Destination' FROM spark.w3t5v1
+					(SELECT DISTINCT `objectid`, `restime`, `fieldvalue` 'group', 1 `Destination` FROM spark.w3t5v1
 					WHERE fieldname IN ('GNAME2')) AS a2
 				ON a.objectid = a2.objectid AND a.restime = a2.restime) AS b1
 				ORDER BY 1, 2) AS b2
