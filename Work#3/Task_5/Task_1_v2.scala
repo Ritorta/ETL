@@ -85,6 +85,7 @@ val df3_concat = df3.groupBy("Tiket")
     .alias("new format"))
     .withColumn("new format", concat(col("new format"),lit(".")))
     .withColumn("Tiket",col("Tiket"))
+    
     df3_concat.write.format("jdbc").option("url", login(0))
         .option("driver", login(1)).option("dbtable", "w3t5v2b")
         .mode("overwrite").save()
