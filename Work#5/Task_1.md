@@ -22,7 +22,7 @@ https://learn.microsoft.com/ru-ru/windows/wsl/basic-commands#install - как н
     1.2.6 Если в консоле не будет ошибки перезагрузите компьютер и далее перейдите к пункту запуска и настройки Linux.
     В случае той или иной ошибки в консоле то Google вам в помощь и инструкция от Microsoft.
         
-        P.s Здесь я напишу ошибки с которыми, я встречался после выполнения всех действий выше, т.е они лечаться если вы все сделали правильно по моей инструкции:
+        P.s Здесь я напишу ошибки с которыми, я встречался после выполнения всех действий выше, т.е они возникнут даже если вы все сделали правильно по моей инструкции:
 
         Ошибка: 
             WslRegisterDistribution failed with error: 0x800701bc ???????? ???????? (Вопросики это кирилица или другой язык которую не может отобразить консоль, вопросиков будет много я не стал их полностью копировать)
@@ -36,6 +36,19 @@ https://learn.microsoft.com/ru-ru/windows/wsl/basic-commands#install - как н
             Вы вдруг такой решили версию wsl, ввели команду wsl --version а консооль напишет, что такой команды нет.
         Лечение:
             Не переживайте если команда wsl --set-default-version 2 прошла успешно то у вас всё хорошо и Linux должен запуститься после настройки и перезагрузки а после инсталяции Linux команда wsl --version у вас зарабоатет.
+
+        Ошибка: 
+            Error code: Wsl/Service/CreateInstance/MountVhd/ERROR_FILE_NOT_FOUND
+        Лечение: 
+            У меня это вылезло когда я захотел переставить свой Linux лечиться командой wsl -l затем командой wsl --unregister Ubuntu всё можете приступать к работе с чистого листа.        
+            Ниже оригинал с английской версии сайта:
+            List the distributions installed, by running following in PowerShell.
+            wsl -l
+            Unregister the distribution. Replace the "Ubuntu" below with your distribution name found in Step #1:
+            NOTE: THIS COMMAND WILL COMPLETELY UNINSTALL YOUR WSL DISTRO.
+            wsl --unregister Ubuntu
+            Launch the Ubuntu (or other distribution) which was installed using Microsoft Store
+
         
 2.  Клиент Linux можно установить на вашу wsl двумя способами: 
         2.1 Заходим в магазин Microsoft Store, пишим в поиске Linux, выбираем который понравился и нажимаем скачать, после скачивания и установки, нажимаем запустить, начётся процесс инициализации и установки Linux куда мы вводим свой логин и пароль. 
