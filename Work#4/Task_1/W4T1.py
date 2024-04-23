@@ -7,10 +7,15 @@ import matplotlib.pyplot as plt
 from sqlalchemy import inspect,create_engine
 from pandas.io import sql
 import warnings,matplotlib
+import configparser
+
+config = configparser.ConfigParser()
+config.read('/Users/Esdesu/Desktop/JreJre/ETL/config.ini')
+password = config['credentials']['password']
 
 warnings.filterwarnings("ignore")
 t0=time.time()
-con=create_engine("mysql://root:Gg235689@localhost/spark")
+con=create_engine("mysql://root:" + password + "@localhost/spark")
 os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
 spark=SparkSession.builder.appName("Hi").getOrCreate()
@@ -119,7 +124,7 @@ df300 = spark.read.format("com.crealytics.spark.excel")\
 
 df_combined = dfG.union(df120).union(df150).union(df250).union(df300)
 
-df_combined.write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=root&password=Gg235689")\
+df_combined.write.format("jdbc").option("url","jdbc:mysql://localhost:3306/spark?user=root&password=" + password)\
         .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "W4T1")\
         .mode("append").save()
 
