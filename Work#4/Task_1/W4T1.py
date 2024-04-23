@@ -18,7 +18,7 @@ t0=time.time()
 con=create_engine("mysql://root:" + password + "@localhost/spark")
 os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
-spark=SparkSession.builder.appName("Hi").getOrCreate()
+spark=SparkSession.builder.appName("Home Work №4").getOrCreate()
 
 sql.execute("""drop table if exists spark.`W4T1`""",con)
 sql.execute("""CREATE TABLE if not exists spark.`W4T1` (
