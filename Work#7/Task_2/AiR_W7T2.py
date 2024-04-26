@@ -11,10 +11,10 @@ t0=time.time()
 con=create_engine("mysql://root:1@localhost:33061/spark")
 os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
-spark=SparkSession.builder.appName("WSL Home Work №4").getOrCreate()
+spark=SparkSession.builder.appName("AiR Home Work №7").getOrCreate()
 
-sql.execute("""drop table if exists spark.`WSL_W6T1`""",con)
-sql.execute("""CREATE TABLE if not exists spark.`WSL_W6T1` (
+sql.execute("""drop table if exists spark.`AiR_W7T2`""",con)
+sql.execute("""CREATE TABLE if not exists spark.`AiR_W7T2` (
 	`number` INT(10) NULL DEFAULT NULL,
 	`Month` DATE NULL DEFAULT NULL,
 	`Payment amount` FLOAT NULL DEFAULT NULL,
@@ -43,7 +43,7 @@ dfG = spark.read.format("com.crealytics.spark.excel")\
         .option("excerptSize", 10)\
         .option("header", "true")\
         .format("excel")\
-        .load("/home/ritorta/HomeWork/W6/Home_4/WSL_W6T1.xlsx").limit(1000)\
+        .load("/home/ritorta/HomeWork/W7/Task_2/W7T2.xlsx").limit(1000)\
         .withColumn("interest", sum1(col("Payment of interest")).over(w))\
         .withColumn("debt", sum1(col("Payment of the principal debt")).over(w))
 
@@ -60,7 +60,7 @@ df120 = spark.read.format("com.crealytics.spark.excel")\
         .option("excerptSize", 10)\
         .option("header", "true")\
         .format("excel")\
-        .load("/home/ritorta/HomeWork/W6/Home_4/WSL_W6T1.xlsx").limit(1000)\
+        .load("/home/ritorta/HomeWork/W7/Task_2/W7T2.xlsx").limit(1000)\
         .withColumn("interest", sum1(col("Payment of interest")).over(w))\
         .withColumn("debt", sum1(col("Payment of the principal debt")).over(w))
 
@@ -77,7 +77,7 @@ df150 = spark.read.format("com.crealytics.spark.excel")\
         .option("excerptSize", 10)\
         .option("header", "true")\
         .format("excel")\
-        .load("/home/ritorta/HomeWork/W6/Home_4/WSL_W6T1.xlsx").limit(1000)\
+        .load("/home/ritorta/HomeWork/W7/Task_2/W7T2.xlsx").limit(1000)\
         .withColumn("interest", sum1(col("Payment of interest")).over(w))\
         .withColumn("debt", sum1(col("Payment of the principal debt")).over(w))
 
@@ -94,7 +94,7 @@ df250 = spark.read.format("com.crealytics.spark.excel")\
         .option("excerptSize", 10)\
         .option("header", "true")\
         .format("excel")\
-        .load("/home/ritorta/HomeWork/W6/Home_4/WSL_W6T1.xlsx").limit(1000)\
+        .load("/home/ritorta/HomeWork/W7/Task_2/W7T2.xlsx").limit(1000)\
         .withColumn("interest", sum1(col("Payment of interest")).over(w))\
         .withColumn("debt", sum1(col("Payment of the principal debt")).over(w))
 
@@ -111,14 +111,14 @@ df300 = spark.read.format("com.crealytics.spark.excel")\
         .option("excerptSize", 10)\
         .option("header", "true")\
         .format("excel")\
-        .load("/home/ritorta/HomeWork/W6/Home_4/WSL_W6T1.xlsx").limit(1000)\
+        .load("/home/ritorta/HomeWork/W7/Task_2/W7T2.xlsx").limit(1000)\
         .withColumn("interest", sum1(col("Payment of interest")).over(w))\
         .withColumn("debt", sum1(col("Payment of the principal debt")).over(w))
 
 df_combined = dfG.union(df120).union(df150).union(df250).union(df300)
 
 df_combined.write.format("jdbc").option("url","jdbc:mysql://localhost:33061/spark?user=root&password=1")\
-        .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "WSL_W6T1")\
+        .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "AiR_W7T2")\
         .mode("append").save()
 
 """df_pandas = df_combined.toPandas()"""
@@ -147,10 +147,7 @@ plt.title('Loan Payments Over Time')
 plt.grid ( True )
 ax.set(xlabel=None)
 
-plot_directory = "/home/ritorta/HomeWork/W6/Home_4/"
-plot_filename = "Loan_Payments_Over_Time.png"
-plt.savefig(plot_directory + plot_filename)
-
+plt.savefig("/home/ritorta/HomeWork/W7/Task_2/Loan_Payments_Over_Time.jpeg")
 plt.show() 
 spark.stop()
 t1=time.time()

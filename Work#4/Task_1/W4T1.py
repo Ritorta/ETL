@@ -1,12 +1,10 @@
-import pyspark,time,platform,sys,os
-from datetime import datetime
+import time, sys, os
 from pyspark.sql.session import SparkSession
-from pyspark.sql.functions import col,lit,current_timestamp
-import pandas as pd
+from pyspark.sql.functions import col, lit
 import matplotlib.pyplot as plt 
-from sqlalchemy import inspect,create_engine
+from sqlalchemy import create_engine
 from pandas.io import sql
-import warnings,matplotlib
+import warnings
 import configparser
 
 config = configparser.ConfigParser()

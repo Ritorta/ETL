@@ -1,5 +1,5 @@
 /*
-chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#1\Task_1\s1.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
+chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#1\Task_1\W1T1.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 */
 
 import org.apache.spark.internal.Logging
@@ -42,7 +42,7 @@ if(1==1){
 
         df1.filter(col("Код предмета").isNotNull).select("Код предмета","Предмет","Учитель")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "w1task1a")
+            .option("driver", driver).option("dbtable", "W1T1a")
             .mode("overwrite").save()
 
     val window1 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
@@ -50,9 +50,9 @@ if(1==1){
             .withColumn("Код предмета", when(col("Код предмета").isNull, last("Код предмета", ignoreNulls = true).over(window1)).otherwise(col("Код предмета")))
             .orderBy("id").drop("id","Предмет","Учитель")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "w1task1b")
+            .option("driver", driver).option("dbtable", "W1T1b")
             .mode("overwrite").save()
-
+    df1.show()
     println("Work 1, Task 1, Successful Load and Save")
 }
 

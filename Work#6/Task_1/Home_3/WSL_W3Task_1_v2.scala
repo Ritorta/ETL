@@ -90,7 +90,7 @@ val df3_concat = df3.groupBy("Tiket")
     df3_concat.write.format("jdbc").option("url", sqlCoun)
         .option("driver", driver).option("dbtable", "wsl_w3t5v2b")
         .mode("overwrite").save()
-    df3_concat.show(400, truncate = false)
+    df3_concat.show(20, 700)
     
 	println("WSL Work 3, Task 5, Successful Load and Save")
 

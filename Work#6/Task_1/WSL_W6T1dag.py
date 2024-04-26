@@ -2,8 +2,7 @@
 
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator, BranchPythonOperator
-from datetime import datetime, timedelta
+from datetime import timedelta
 import pendulum
 
 default_args = {

@@ -1,5 +1,5 @@
 /*
-chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#1\Task_4\t4.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
+chcp 65001 && spark-shell -i C:\Users\Esdesu\Desktop\JreJre\ETL\HomeWork\ETL\Work#1\Task_4\W1T4.scala --conf "spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 */
 
 import org.apache.spark.internal.Logging
@@ -42,7 +42,7 @@ if(1==1){
 
         df1.filter(col("Employee_ID").isNotNull).select("Employee_ID", "Job_code")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "w1task4a")
+            .option("driver", driver).option("dbtable", "W1T4a")
             .mode("overwrite").save()
 
     val nf2 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
@@ -50,23 +50,23 @@ if(1==1){
     val df2 = df1.withColumn("id", monotonicallyIncreasingId())
 
         df2.withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(nf2)).otherwise(col("Employee_ID")))
-            .withColumn("table", lit("w1task4b"))
+            .withColumn("table", lit("W1T4b"))
 
             .orderBy("id").drop("id", "Job_Code", "Job")
-            .filter(col("table") === "w1task4b")
+            .filter(col("table") === "W1T4b")
             .dropDuplicates()
             .drop("table")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "w1task4b")
+            .option("driver", driver).option("dbtable", "W1T4b")
             .mode("overwrite").save()
 
-        df2.withColumn("table", lit("w1task4c"))
+        df2.withColumn("table", lit("W1T4c"))
             .orderBy("id").drop("id", "Employee_ID", "Name", "City_code", "Home_city")
-            .filter(col("table") === "w1task4c")
+            .filter(col("table") === "W1T4c")
             .dropDuplicates()
             .drop("table")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "w1task4c")
+            .option("driver", driver).option("dbtable", "W1T4c")
             .mode("overwrite").save()
 
     val nf3 = Window.partitionBy(lit(1)).orderBy(("id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
@@ -74,32 +74,32 @@ if(1==1){
     val df3 = df1.withColumn("id", monotonicallyIncreasingId())
 
         df3.withColumn("Employee_ID", when(col("Employee_ID").isNull, last("Employee_ID", ignoreNulls = true).over(nf2)).otherwise(col("Employee_ID")))
-            .withColumn("table", lit("w1task4b"))
+            .withColumn("table", lit("W1T4b"))
 
             .orderBy("id").drop("id", "Job_Code", "Job", "Home_city")
-            .filter(col("table") === "w1task4b")
+            .filter(col("table") === "W1T4b")
             .dropDuplicates()
             .drop("table")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "w1task4b")
+            .option("driver", driver).option("dbtable", "W1T4b")
             .mode("overwrite").save()
 
-        df3.withColumn("table", lit("w1task4c"))
+        df3.withColumn("table", lit("W1T4c"))
             .orderBy("id").drop("id", "Employee_ID", "Name", "City_code", "Home_city")
-            .filter(col("table") === "w1task4c")
+            .filter(col("table") === "W1T4c")
             .dropDuplicates()
             .drop("table")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "w1task4c")
+            .option("driver", driver).option("dbtable", "W1T4c")
             .mode("overwrite").save()
 
-        df3.withColumn("table", lit("w1task4d"))
+        df3.withColumn("table", lit("W1T4d"))
             .orderBy("id").drop("id", "Employee_ID", "Name", "Job_Code", "Job")
-            .filter(col("table") === "w1task4d")
+            .filter(col("table") === "W1T4d")
             .dropDuplicates()
             .drop("table")
             .write.format("jdbc").option("url", sqlCoun)
-            .option("driver", driver).option("dbtable", "w1task4d")
+            .option("driver", driver).option("dbtable", "W1T4d")
             .mode("overwrite").save()
 
     println("Work 1, Task 4, Successful Load and Save")
