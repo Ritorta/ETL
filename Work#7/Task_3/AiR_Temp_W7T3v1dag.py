@@ -1,11 +1,8 @@
-
-from datetime import datetime
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator, BranchPythonOperator
 from datetime import datetime, timedelta
 from airflow.operators.python import PythonOperator
-from datetime import datetime
 import pendulum
 import requests
 
