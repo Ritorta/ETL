@@ -3,11 +3,11 @@ from datetime import datetime
 from pandas.io import sql
 import requests
 
-# Получаем API ключ OpenWeatherMap
+
 api_key = 'bc6d51747326a116e97fbc66146b6deb'
 city = 'Tyumen'
 
-# Функция для получения температуры и даты со временем из API OpenWeatherMap
+
 def openwear_get_temp(api_key, city):
     url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}' 
     response = requests.get(url)
@@ -18,7 +18,6 @@ def openwear_get_temp(api_key, city):
     return round(float(temperature) - 273.15, 2), date_time
   
     
-# Функция для записи температуры и текущего времени в базу данных
 def save_weather(api_key, city):
     temperature, date_time = openwear_get_temp(api_key, city)
     
@@ -32,6 +31,5 @@ def save_weather(api_key, city):
         ins = f"INSERT INTO spark.`Temperature_Tyumen` (date_time, temperature) VALUES ('{date_time}', {temperature})"
         connection.execute(ins)
 
-# Получаем данные погоды и записываем ее в базу данных
-save_weather(api_key, city)
 
+save_weather(api_key, city)

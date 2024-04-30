@@ -52,6 +52,7 @@ description="Home_Work_7_3",
 catchup=False,
 schedule_interval='0 6 * * *')
 
+
 def run_airflow_script(**kwargs):
     exec(open("/home/ritorta/HomeWork/W7/Task_3/AiR_W7T3.py").read())
 
