@@ -10,7 +10,7 @@ import pandas as pd
 os.environ["no_proxy"]="*"
 
 @dag(
-    dag_id="wether-tlegram-sql-exel",
+    dag_id="wether-tlegram-sql-exel-v1",
     schedule="@once",
     start_date=pendulum.datetime(2024, 4, 30, tz="UTC"),
     catchup=False,
@@ -21,22 +21,31 @@ os.environ["no_proxy"]="*"
 def WetherETL():
 
     first_message_telegram = TelegramOperator(
-        task_id='send_message_telegram',
+        task_id='wether_message_telegram',
         telegram_conn_id='telegram_default',
         token='6875707033:AAG2TaDKrrLUwlUmcX9LIVA1uCm6S43pya0',
         chat_id='547504860',
-        text='Wether in Tyumen \nYandex: ' + "{{ ti.xcom_pull(task_ids=['yandex_wether'],key='wether')[0]['temperature']}}" + " degrees at " + "{{ ti.xcom_pull(task_ids=['yandex_wether'],key='wether')[0]['datetime']}}" +
-    "\nOpen wether: " + "{{ ti.xcom_pull(task_ids=['open_wether'],key='open_wether')[0]['temperature']}}" + " degrees at " + "{{ ti.xcom_pull(task_ids=['open_wether'],key='open_wether')[0]['datetime']}}",
+        text='''\
+                  <b>*Weather in Tyumen*</b>
+                  <b>Yandex</b>
+    |  Temperature  |      Datetime       |
+    |---------------|---------------------|
+    | {{ '{:<5}'.format(ti.xcom_pull(task_ids=["yandex_wether"], key="wether")[0]["temperature"]) }} degrees | {{ ti.xcom_pull(task_ids=["yandex_wether"], key="wether")[0]["datetime"] }} |
+    
+                <b>Open Weather:</b>
+    |  Temperature  |      Datetime       |
+    |---------------|---------------------|
+    | {{ '{:<5}'.format(ti.xcom_pull(task_ids=["open_wether"], key="open_wether")[0]["temperature"]) }} degrees | {{ ti.xcom_pull(task_ids=["open_wether"], key="open_wether")[0]["datetime"] }} |
+    '''
     )
 
 
     second_message_telegram = TelegramOperator(
-        task_id='send_message_telegram_excel',
+        task_id='exel_message_telegram',
         telegram_conn_id='telegram_default',
         token='6875707033:AAG2TaDKrrLUwlUmcX9LIVA1uCm6S43pya0',
         chat_id='547504860',
-        text="""<b>Data from excel file:</b> {{ task_instance.xcom_pull(task_ids='data_from_excel') }}""",
-
+        text='*Data from excel file:*\n```\n{{ task_instance.xcom_pull(task_ids="data_from_excel") }}\n```',
     )
 
 
@@ -77,6 +86,7 @@ def WetherETL():
         ti.xcom_push(key='open_wether', value={'temperature': temperature, 'datetime': current_datetime})
 
 
+
     @task(task_id='save_weather')
     def get_save_weather(**kwargs):
         yandex_data = kwargs['ti'].xcom_pull(task_ids='yandex_wether', key='wether')
@@ -110,27 +120,21 @@ def WetherETL():
         print("Yandex "+str(kwargs['ti'].xcom_pull(task_ids=['yandex_wether'],key='wether')[0])+" Open "+str(kwargs['ti'].xcom_pull(task_ids=['open_wether'],key='open_wether')[0]))
 
 
-    def truncate_message(message, max_length=1000):
+    def truncate_message(message, max_length=3959):
         if len(message) > max_length:
             return message[:max_length]
         return message
     
 
     @task(task_id='data_from_excel')
-    # def get_data_from_excel():
-    #     excel_file_path = "/home/ritorta/HomeWork/W8/TeL_W8T2.xlsx"
-    #     df = pd.read_excel(excel_file_path)
-    #     table_html = df.to_html(index=False, escape=False)
-    #     truncated_html = truncate_message(table_html)
-    #     return truncated_html
-
     def get_data_from_excel():
         excel_file_path = "/home/ritorta/HomeWork/W8/TeL_W8T2.xlsx"
         df = pd.read_excel(excel_file_path)
-        table_text = df.to_string(index=False)
+        table_text = df.to_markdown(index=False)
         truncated_text = truncate_message(table_text)
+        
         return truncated_text
-
+    
     yandex_wether = get_yandex_wether()
     open_wether = get_open_wether()
     python_wether = get_wether()
