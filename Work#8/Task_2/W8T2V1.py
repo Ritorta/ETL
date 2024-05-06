@@ -12,7 +12,7 @@ os.environ["no_proxy"]="*"
 @dag(
     dag_id="wether-tlegram-sql-exel-v1",
     schedule="@once",
-    start_date=pendulum.datetime(2024, 4, 30, tz="UTC"),
+    start_date=pendulum.datetime(2024, 5, 5, tz="UTC"),
     catchup=False,
     dagrun_timeout=datetime.timedelta(minutes=60),
 )
@@ -38,7 +38,6 @@ def WetherETL():
     | {{ '{:<5}'.format(ti.xcom_pull(task_ids=["open_wether"], key="open_wether")[0]["temperature"]) }} degrees | {{ ti.xcom_pull(task_ids=["open_wether"], key="open_wether")[0]["datetime"] }} |
     '''
     )
-
 
     second_message_telegram = TelegramOperator(
         task_id='exel_message_telegram',
@@ -84,7 +83,6 @@ def WetherETL():
         print(a)
         
         ti.xcom_push(key='open_wether', value={'temperature': temperature, 'datetime': current_datetime})
-
 
 
     @task(task_id='save_weather')
@@ -134,6 +132,7 @@ def WetherETL():
         truncated_text = truncate_message(table_text)
         
         return truncated_text
+    
     
     yandex_wether = get_yandex_wether()
     open_wether = get_open_wether()
