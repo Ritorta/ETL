@@ -2,6 +2,8 @@ import datetime
 import os
 import requests
 import pendulum
+import os
+from dotenv import load_dotenv
 from airflow.decorators import dag, task
 from airflow.providers.telegram.operators.telegram import TelegramOperator
 from sqlalchemy import create_engine
@@ -20,6 +22,12 @@ os.environ["no_proxy"]="*"
 
 
 def WetherETL():
+
+    #API
+    dotenv_path = '/home/ritorta/HomeWork/API_KEY.env' # Проверить путь к API
+    load_dotenv(dotenv_path)
+    yandex_api_key = os.getenv('YANDEX_API')
+    openweather_api = os.getenv('OPENWEATHER_API')
 
     first_message_telegram = TelegramOperator(
         task_id='weather_sql_message_telegram',
@@ -45,7 +53,7 @@ def WetherETL():
 
         payload={}
         headers = {
-        'X-Yandex-API-Key': '33f45b91-bcd4-46e4-adc2-33cfdbbdd88e'
+        'X-Yandex-API-Key': yandex_api_key
         }
         response = requests.request("GET", url, headers=headers, data=payload)
         print("test")
@@ -60,10 +68,12 @@ def WetherETL():
     @task(task_id='open_wether')
     def get_open_wether(**kwargs):
         ti = kwargs['ti']
-        url = "https://api.openweathermap.org/data/2.5/weather?lat=57.152985&lon=65.527168&appid=2cd78e55c423fc81cebc1487134a6300"
+        url = "https://api.openweathermap.org/data/2.5/weather?lat=57.152985&lon=65.527168"
 
         payload={}
-        headers = {}
+        headers = {
+        'x-api-key': openweather_api
+        }
 
         response = requests.request("GET", url, headers=headers, data=payload)
         print("test")

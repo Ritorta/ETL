@@ -7,13 +7,20 @@ from datetime import datetime, timedelta
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 import requests
+import os
+from dotenv import load_dotenv
 
 
 def openwear_get_temp(**kwargs):
 
+    #API
+    dotenv_path = '/home/ritorta/HomeWork/API_KEY.env' # Проверить путь к API
+    load_dotenv(dotenv_path)
+    openweather_api = os.getenv('OPENWEATHER_API')
+
     ti = kwargs['ti']
     city = "Tyumen"
-    api_key = "bc6d51747326a116e97fbc66146b6deb"
+    api_key = openweather_api
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"
     payload = {}
     headers = {}
